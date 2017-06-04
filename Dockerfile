@@ -1,8 +1,5 @@
-FROM centos/php-56-centos7:latest
-ARG WORDPRESS_VERSION
-ARG WORDPRESS_SHA1
-ENV WORDPRESS_VERSION ${WORDPRESS_VERSION:-4.5}
-ENV WORDPRESS_SHA1 ${WORDPRESS_SHA1:-439f09e7a948f02f00e952211a22b8bb0502e2e2}
+FROM php:7.0
+ENV WORDPRESS_VERSION 4.7
 
 VOLUME /opt/app-root/wp-content
 
@@ -10,7 +7,6 @@ VOLUME /opt/app-root/wp-content
 USER root
 RUN cd /tmp && curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
     && mkdir -p /opt/app-root/wordpress \
-    && echo "$WORDPRESS_SHA1 *wordpress.tar.gz" | sha1sum -c - \
     && tar -xzf wordpress.tar.gz --strip-components=1 -C /opt/app-root/wordpress \
     && rm wordpress.tar.gz \
     && mv /opt/app-root/wordpress/wp-content /opt/app-root/wordpress/wp-content-install \
@@ -28,7 +24,7 @@ RUN { \
       echo 'opcache.revalidate_freq=60'; \
       echo 'opcache.fast_shutdown=1'; \
       echo 'opcache.enable_cli=1'; \
-      } > /etc/opt/rh/rh-php56/php.d/11-opcache-wordpress.ini
+      } > /etc/opt/rh/rh-php70/php.d/11-opcache-wordpress.ini
 
 # Install config templates
 COPY contrib/* /opt/app-root/wordpress/
