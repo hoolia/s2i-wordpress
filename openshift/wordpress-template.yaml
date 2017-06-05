@@ -4,8 +4,8 @@ apiVersion: v1
 metadata:
   name: wordpress-mysql-persistent
   annotations:
-    openshift.io/display-name: Wordpress 4.7 + MySQL (Persistent)
-    description: Wordpress 4.7 application with a persistent MySQL database. For more information
+    openshift.io/display-name: Wordpress + MySQL (Persistent)
+    description: Wordpress application with a persistent MySQL database. For more information
       about using this template, including OpenShift considerations, see https://github.com/BonnierNews/wordpress-quickstart/blob/master/README.md.
     tags: quickstart,php,wordpress
     iconClass: icon-php
@@ -69,36 +69,6 @@ objects:
     name: "${NAME}"
     annotations:
       description: Keeps track of changes in the application image
-- kind: BuildConfig
-  apiVersion: v1
-  metadata:
-    name: "${NAME}"
-    annotations:
-      description: Defines how to build the application
-  spec:
-    source:
-      type: Git
-      git:
-        uri: "${SOURCE_REPOSITORY_URL}"
-        ref: "${SOURCE_REPOSITORY_REF}"
-      contextDir: "${CONTEXT_DIR}"
-    strategy:
-      type: Source
-      sourceStrategy:
-        from:
-          kind: ImageStreamTag
-          namespace: "${NAMESPACE}"
-          name: wordpress:4.7
-    output:
-      to:
-        kind: ImageStreamTag
-        name: "${NAME}:latest"
-    triggers:
-    - type: ImageChange
-    - type: ConfigChange
-    - type: GitHub
-      github:
-        secret: "${GITHUB_WEBHOOK_SECRET}"
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -116,7 +86,8 @@ objects:
         - wordpress
         from:
           kind: ImageStreamTag
-          name: "${NAME}:latest"
+          name: "wordpress:${WORDPRESS_VERSION}"
+          namespace: openshift
     - type: ConfigChange
     replicas: 1
     selector:
@@ -129,8 +100,9 @@ objects:
       spec:
         volumes:
         - name: "${NAME}-data"
-          persistentVolumeClaim:
-            claimName: "${NAME}-wp-content"
+          gitRepo:
+            repository: "${SOURCE_REPOSITORY_URL}"
+            revision: "${SOURCE_REPOSITORY_REF}"
         containers:
         - name: wordpress
           image: " "
@@ -238,16 +210,6 @@ objects:
     resources:
       requests:
         storage: "${VOLUME_CAPACITY}"
-- kind: PersistentVolumeClaim
-  apiVersion: v1
-  metadata:
-    name: "${NAME}-wp-content"
-  spec:
-    accessModes:
-    - ReadWriteMany
-    resources:
-      requests:
-        storage: "${WORDPRESS_VOLUME_CAPACITY}"
 - kind: Service
   apiVersion: v1
   metadata:
@@ -278,7 +240,7 @@ objects:
         - mysql
         from:
           kind: ImageStreamTag
-          namespace: "${NAMESPACE}"
+          namespace: openshift
           name: mysql:5.7
     - type: ConfigChange
     replicas: 1
@@ -339,11 +301,6 @@ parameters:
   description: The name assigned to all of the frontend objects defined in this template.
   required: true
   value: wordpress-mysql
-- name: NAMESPACE
-  displayName: Namespace
-  description: The OpenShift Namespace where the ImageStream resides.
-  required: true
-  value: openshift
 - name: MEMORY_LIMIT
   displayName: Memory Limit
   description: Maximum amount of memory the wordpress container can use.
@@ -359,11 +316,6 @@ parameters:
   description: Volume space available for MySQL data, e.g. 512Mi, 2Gi
   value: 5Gi
   required: true
-- name: WORDPRESS_VOLUME_CAPACITY
-  displayName: Wordpress Volume Capacity
-  description: Volume space available for Wordpress data, e.g. 512Mi, 2Gi
-  value: 5Gi
-  required: true
 - name: SOURCE_REPOSITORY_URL
   displayName: Git Repository URL
   description: The URL of the repository with your application source code.
@@ -373,6 +325,7 @@ parameters:
   displayName: Git Reference
   description: Set this to a branch name, tag or other ref of your repository if you
     are not using the default branch.
+  value: master
 - name: CONTEXT_DIR
   displayName: Context Directory
   description: Set this to the relative path to your project if it is not in the root
@@ -408,6 +361,10 @@ parameters:
   displayName: Database Password
   generate: expression
   from: "[a-zA-Z0-9]{16}"
+- name: WORDPRESS_VERSION
+  displayName: Wordpress version
+  description: "Valid values: latest, 4.5, 4.6, 4.7"
+  value: "latest"
 - name: WORDPRESS_DEBUG
   displayName: Wordpress debug
   description: Enable wordpress debugging.
