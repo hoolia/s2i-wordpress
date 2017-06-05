@@ -1,4 +1,6 @@
 FROM php:7.0
+ENTRYPOINT /usr/libexec/s2i/run
+
 ENV WORDPRESS_VERSION 4.7
 
 VOLUME /opt/app-root/wp-content
