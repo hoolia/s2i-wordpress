@@ -2,6 +2,9 @@
 
 readonly WP_BASE_DIR=/opt/app-root/src
 
+# Copy the version of wordpress from the image first
+(cd ${WP_BASE_DIR} && cp -Rf /opt/app-root/wordpress/. ./)
+
 # The wp-content directory is empty, which means we run Wordpress for the first
 # time or we run wordpress on ephemeral volume.
 # We copy the original installation files in that case.
