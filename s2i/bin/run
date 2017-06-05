@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 readonly WP_BASE_DIR=/opt/app-root/src
 
