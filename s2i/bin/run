@@ -13,7 +13,7 @@ if [ ! "$(ls -A /opt/app-root/wp-content)" ]; then
   cp -R ${WP_BASE_DIR}/wp-content-install/* /opt/app-root/wp-content/
 fi
 
-if [ "$(ls -A /opt/app-root/src/wp-content)" ]; then
+if [ "$(ls -A ${WP_BASE_DIR}/wp-content)" ]; then
   echo "-> Installing provided user content ..."
   cp -fR ${WP_BASE_DIR}/wp-content/* /opt/app-root/wp-content/
 fi
@@ -35,63 +35,55 @@ export WORDPRESS_SECURE_AUTH_SALT=${WORDPRESS_SECURE_AUTH_SALT:-"83kbs6rtoD2siI1
 export WORDPRESS_LOGGED_IN_SALT=${WORDPRESS_LOGGED_IN_SALT:-"83kbs62siI1gwk0laHSCcu6LSkN+Ja6QFeUMaX"}
 export WORDPRESS_NONCE_SALT=${WORDPRESS_NONCE_SALT:-"83s6rtoD2siI1gwk0laHSC6LSkN+Ja6QFeUMaX"}
 
-# Do nothing if user provided custom configuration file
-# If not, generate one.
-if [ ! -f ${WP_BASE_DIR}/wp-config.php ]; then
-  # Check all required variable
-  [[ -z "${WORDPRESS_DB_NAME}" ]]     && echo "The WORDPRESS_DB_NAME variable must be set." && exit 1
-  [[ -z "${WORDPRESS_DB_USER}" ]]     && echo "The WORDPRESS_DB_USER variable must be set." && exit 1
-  [[ -z "${WORDPRESS_DB_PASSWORD}" ]] && echo "The WORDPRESS_DB_PASSWORD variable must be set." && exit 1
-  [[ -z "${WORDPRESS_DB_HOST}" ]]     && echo "The WORDPRESS_DB_HOST variable must be set." && exit 1
-  cat <<EOF > /tmp/wp-config.php
-<?php
-define('DB_NAME',          getenv('WORDPRESS_DB_NAME'));
-define('DB_USER',          getenv('WORDPRESS_DB_USER'));
-define('DB_PASSWORD',      getenv('WORDPRESS_DB_PASSWORD'));
-define('DB_HOST',          getenv('WORDPRESS_DB_HOST'));
-define('DB_CHARSET',       'utf8');
-define('DB_COLLATE',       '');
-define('AUTH_KEY',         getenv('WORDPRESS_AUTH_KEY'));
-define('SECURE_AUTH_KEY',  getenv('WORDPRESS_SECURE_AUTH_KEY'));
-define('LOGGED_IN_KEY',    getenv('WORDPRESS_LOGGED_IN_KEY'));
-define('NONCE_KEY',        getenv('WORDPRESS_NONCE_KEY'));
-define('AUTH_SALT',        getenv('WORDPRESS_AUTH_SALT'));
-define('SECURE_AUTH_SALT', getenv('WORDPRESS_SECURE_AUTH_SALT'));
-define('LOGGED_IN_SALT',   getenv('WORDPRESS_LOGGED_IN_SALT'));
-define('NONCE_SALT',       getenv('WORDPRESS_NONCE_SALT'));
+echo "-> Generated new wp-config.php file ..."
 
-\$table_prefix  = '${WORDPRESS_TABLE_PREFIX}';
-define('WP_DEBUG', ${WORDPRESS_DEBUG});
-EOF
+# Completize configuration
+if [ -f ${WP_BASE_DIR}/wp-config.php ]; then
+  grep -q "^?>" ${WP_BASE_DIR}/wp-config.php 2>/dev/null && echo "<?php" >>${WP_BASE_DIR}/wp-config.php
+else
+  cat wp-config.php.template >> ${WP_BASE_DIR}/wp-config.php
+fi
 
-  # multisite support
-  if ${WORDPRESS_MULTISITE}; then
-    echo "Enabling multisite functionality..."
-    [[ -z "${WORDPRESS_DOMAIN_CURRENT_SITE}" ]] && echo "The WORDPRESS_DOMAIN_CURRENT_SITE variable must be set." && exit 1
-    [[ -z "${WORDPRESS_HOME}" ]] && echo "The WORDPRESS_HOME variable must be set." && exit 1  
-    [[ -z "${WORDPRESS_SITEURL}" ]] && echo "The WORDPRESS_SITEURL variable must be set." && exit 1   
-    cat <<EOF >> /tmp/wp-config.php
+[[ -n "${WORDPRESS_DB_NAME}" ]]      && echo "define('DB_NAME',             getenv('WORDPRESS_DB_NAME'));"     >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_DB_USER}" ]]      && echo "define('DB_USER',             getenv('WORDPRESS_DB_USER'));"     >>${WP_BASE_DIR}/wp-config.php 
+[[ -n "${WORDPRESS_DB_PASSWORD}" ]]  && echo "define('DB_PASSWORD',         getenv('WORDPRESS_DB_PASSWORD'));" >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_DB_HOST}" ]]      && echo "define('DB_HOST',             getenv('WORDPRESS_DB_HOST'));"     >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_DB_HOST}" ]]      && echo "define('DB_CHARSET',          'utf8'                     );"     >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_DB_HOST}" ]]      && echo "define('DB_COLLATE',          ''                         );"     >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${AUTH_KEY}" ]]               && echo "define('AUTH_KEY',            getenv('AUTH_KEY'));"              >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${SECURE_AUTH_KEY}" ]]        && echo "define('SECURE_AUTH_KEY',     getenv('SECURE_AUTH_KEY'));"       >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${LOGGED_IN_KEY}" ]]          && echo "define('LOGGED_IN_KEY',       getenv('LOGGED_IN_KEY'));"         >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${NONCE_KEY}" ]]              && echo "define('NONCE_KEY',           getenv('NONCE_KEY'));"             >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${AUTH_SALT}" ]]              && echo "define('AUTH_SALT',           getenv('AUTH_SALT'));"             >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${SECURE_AUTH_SALT}" ]]       && echo "define('SECURE_AUTH_SALT',    getenv('SECURE_AUTH_SALT'));"      >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${LOGGED_IN_SALT}" ]]         && echo "define('LOGGED_IN_SALT',      getenv('LOGGED_IN_SALT'));"        >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${NONCE_SALT}" ]]             && echo "define('NONCE_SALT',          getenv('NONCE_SALT'));"            >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${DOMAIN_CURRENT_SITE}" ]]    && echo "define('DOMAIN_CURRENT_SITE', getenv('DOMAIN_CURRENT_SITE'));"   >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_HOME}" ]]         && echo "define('WP_HOME',             getenv('WORDPRESS_HOME'));"        >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_SITEURL}" ]]      && echo "define('WP_SITEURL',          getenv('WORDPRESS_SITEURL'));"     >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_DEBUG}" ]]        && echo "define('WP_DEBUG',            getenv('WORDPRESS_DEBUG'));"       >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_TABLE_PREFIX}" ]] && echo "\$table_prefix  = '${WORDPRESS_TABLE_PREFIX}';"                  >>${WP_BASE_DIR}/wp-config.php
+
+# multisite support
+if ${WORDPRESS_MULTISITE}; then
+  echo "Enabling multisite functionality..."
+  [[ -z "${WORDPRESS_DOMAIN_CURRENT_SITE}" ]] && echo "The WORDPRESS_DOMAIN_CURRENT_SITE variable must be set." && exit 1
+  [[ -z "${WORDPRESS_HOME}" ]] && echo "The WORDPRESS_HOME variable must be set." && exit 1  
+  [[ -z "${WORDPRESS_SITEURL}" ]] && echo "The WORDPRESS_SITEURL variable must be set." && exit 1   
+  cat <<EOF >> ${WP_BASE_DIR}/wp-config.php
 define( 'WP_ALLOW_MULTISITE', true );
 define('MULTISITE', true);
 define('SUBDOMAIN_INSTALL', false);
 define('PATH_CURRENT_SITE', '/');
 define('SITE_ID_CURRENT_SITE', 1);
 define('BLOG_ID_CURRENT_SITE', 1);
-define('DOMAIN_CURRENT_SITE', '${WORDPRESS_DOMAIN_CURRENT_SITE}');
-define('WP_HOME','${WORDPRESS_HOME}');
-define('WP_SITEURL','${WORDPRESS_SITEURL}');
 EOF
-  fi
-
-  # Completize configuration
-  cat wp-config.php.template >> /tmp/wp-config.php
-  echo "-> Generated new wp-config.php file ..."
-  mv /tmp/wp-config.php /opt/app-root/src/wp-config.php
 fi
+
 if ${WORDPRESS_DEBUG}; then
   echo "Wordpress debug enabled....."
   echo "wp-config:"
-  cat /opt/app-root/src/wp-config.php
+  cat ${WP_BASE_DIR}/wp-config.php
 fi
 echo -e "-> Wordpress is now configured!\n"
 exec ${STI_SCRIPTS_PATH}/run-base
