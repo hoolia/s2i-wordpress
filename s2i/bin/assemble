@@ -11,7 +11,7 @@ cp -Rf /opt/app-root/wordpress/. ./
 ${STI_SCRIPTS_PATH}/assemble-base
 
 chmod -R a-w ./
-chmod a+rwX wp-config.php \
-            wp-content \
+chmod a+rwX wp-config.php      \
+            wp-content         \
             wp-content/uploads \
-            wp-content/cache
+            wp-content/cache   && true
