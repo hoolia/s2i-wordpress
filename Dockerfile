@@ -10,12 +10,10 @@ USER root
 RUN cd /tmp && curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
     && mkdir -p /opt/app-root/wordpress \
     && tar -xzf wordpress.tar.gz --strip-components=1 -C /opt/app-root/wordpress \
-    && rm wordpress.tar.gz \
+    && rm -f wordpress.tar.gz \
     && mv /opt/app-root/wordpress/wp-content /opt/app-root/wordpress/wp-content-install \
-    && mv $STI_SCRIPTS_PATH/run $STI_SCRIPTS_PATH/run-base \
-    && mv $STI_SCRIPTS_PATH/assemble $STI_SCRIPTS_PATH/assemble-base \
-    && fix-permissions /opt/app-root/wordpress \
-    && fix-permissions /opt/app-root/wp-content && chmod -R 0777 /opt/app-root/wp-content
+    && mv $STI_SCRIPTS_PATH/run      $STI_SCRIPTS_PATH/run-base \
+    && mv $STI_SCRIPTS_PATH/assemble $STI_SCRIPTS_PATH/assemble-base
 
 
 # Copied from the official Wordpress Docker image
@@ -31,10 +29,14 @@ RUN { \
 # Install config templates
 COPY contrib/* /opt/app-root/wordpress/
 
-# Add certs
-RUN mv -f /opt/app-root/wordpress/*.crt /etc/pki/ca-trust/source/anchors/ \
-  && update-ca-trust
-
 # Install wordpress S2I scripts
 COPY s2i/bin/* $STI_SCRIPTS_PATH/
+
+# Add certs
+RUN mv -f /opt/app-root/wordpress/*.crt /etc/pki/ca-trust/source/anchors/ \
+    && update-ca-trust \
+    && fix-permissions /opt/app-root/wordpress \
+    && fix-permissions /opt/app-root/wp-content \
+    && chmod 0777      /opt/app-root/wp-content
+
 USER 1001
