@@ -14,4 +14,4 @@ chmod -R a-w ./
 chmod a+rwX wp-config.php      \
             wp-content         \
             wp-content/uploads \
-            wp-content/cache   && true
+            wp-content/cache   || true
