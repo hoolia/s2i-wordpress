@@ -5,10 +5,8 @@
 # wordpress files.
 #
 
+mv /tmp/src/wp-content /tmp/src/wp-content-user
 bash -x ${STI_SCRIPTS_PATH}/assemble-base
-
-echo "-> Installing './wp-content' into './wp-content-user' ..."
-mv wp-content wp-content-user
 
 chmod -R u=rwX,go=rX ./
 chmod a+rw wp-config.php .
