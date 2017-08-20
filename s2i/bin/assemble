@@ -5,13 +5,10 @@
 # wordpress files.
 #
 
-# Copy the version of wordpress from the image first
-cp -Rf /opt/app-root/wordpress/. ./
+bash -x ${STI_SCRIPTS_PATH}/assemble-base
 
-${STI_SCRIPTS_PATH}/assemble-base
+echo "-> Installing './wp-content' into './wp-content-user' ..."
+mv wp-content wp-content-user
 
-chmod -R a-w ./
-chmod a+rwX wp-config.php      \
-            wp-content         \
-            wp-content/uploads \
-            wp-content/cache   || true
+chmod -R u=rwX,go=rX ./
+chmod a+rw wp-config.php .
