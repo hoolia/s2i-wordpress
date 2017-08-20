@@ -104,7 +104,7 @@ objects:
           - containerPort: 8080
           volumeMounts:
           - name: "${NAME}-data"
-            mountPath: "/opt/app-root/wp-content"
+            mountPath: "/opt/app-root/src/wp-content"
           readinessProbe:
             timeoutSeconds: 3
             initialDelaySeconds: 3

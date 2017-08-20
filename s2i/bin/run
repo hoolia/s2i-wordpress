@@ -2,14 +2,11 @@
 
 readonly WP_BASE_DIR=/opt/app-root/src
 
-# The wp-content directory is empty, which means we run Wordpress for the first
-# time or we run wordpress on ephemeral volume.
-# We copy the original installation files in that case.
 echo "-> Installing base Wordpress plugins and themes onto Persistent Volume ..."
-cp -R ${WP_BASE_DIR}/wp-content-install/* /opt/app-root/wp-content/
+cp -R wp-content-install/* wp-content/
 
 echo "-> Installing user provided wp-content onto Persistent Volume ..."
-cp -fR ${WP_BASE_DIR}/wp-content-user/* /opt/app-root/wp-content/
+cp -fR wp-content-user/* wp-content/
 
 # Setup defaults
 export WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX:-"wp_"}

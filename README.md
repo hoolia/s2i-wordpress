@@ -37,7 +37,7 @@ Then start a mysql container:
 
 Then build and run s2i:
 
-`make build && s2i build ../bbm-resumeblogg  bonniernews/s2i-wordpress47:latest  --pull-policy=never --copy resume-blog; docker run -v /tmp/wp-content:/opt/app-root/wp-content -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_DB_USER=wordpress -e WORDPRESS_DB_PASSWORD=wordpress -e WORDPRESS_DB_HOST=mysql -e WORDPRESS_DEBUG=true --link mysql:mysql -it -p 8080:8080 resume-blog`
+`make build && s2i build ../bbm-resumeblogg  bonniernews/s2i-wordpress47:latest  --pull-policy=never --copy resume-blog; docker run -v /tmp/wp-content:/opt/app-root/src/wp-content -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_DB_USER=wordpress -e WORDPRESS_DB_PASSWORD=wordpress -e WORDPRESS_DB_HOST=mysql -e WORDPRESS_DEBUG=true --link mysql:mysql -it -p 8080:8080 resume-blog`
 
 Point your browser http://localhost:8080
 
