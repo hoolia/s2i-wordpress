@@ -27,10 +27,10 @@ RUN { \
       echo 'opcache.enable_cli=1'; \
     } > /etc/opt/rh/rh-php70/php.d/11-opcache-wordpress.ini
 
-RUN curl -o /tmp/wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
- && tar -xzf /tmp/wordpress.tar.gz --strip-components=1 -C . \
- && rm -f /tmp/wordpress.tar.gz \
- && mv ./wp-content ./wp-content-install \
- && chmod -R u=rwX,go=rX ./*
+RUN curl -vo /tmp/wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz 
+RUN tar -xzf /tmp/wordpress.tar.gz --strip-components=1 -C .
+RUN rm -f /tmp/wordpress.tar.gz
+RUN mv ./wp-content ./wp-content-install
+RUN chmod -R u=rwX,go=rX ./*
 
 USER 1001
