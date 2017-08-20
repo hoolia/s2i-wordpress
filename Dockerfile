@@ -5,8 +5,6 @@ CMD /usr/libexec/s2i/run
 
 ENV WORDPRESS_VERSION 4.7
 
-VOLUME /opt/app-root/src/wp-content
-
 USER root
 
 RUN mv $STI_SCRIPTS_PATH/run      $STI_SCRIPTS_PATH/run-base \
@@ -32,5 +30,7 @@ RUN tar -xzf /tmp/wordpress.tar.gz --strip-components=1 -C .
 RUN rm -f /tmp/wordpress.tar.gz
 RUN mv ./wp-content ./wp-content-install
 RUN chmod -R u=rwX,go=rX ./*
+
+VOLUME /opt/app-root/src/wp-content
 
 USER 1001
