@@ -24,10 +24,8 @@ export WORDPRESS_NONCE_SALT=${WORDPRESS_NONCE_SALT:-"83s6rtoD2siI1gwk0laHSC6LSkN
 echo "-> Generated new wp-config.php file ..."
 
 # Completize configuration
-if [ -f ${WP_BASE_DIR}/wp-config.php ]; then
-  grep -q "^?>" ${WP_BASE_DIR}/wp-config.php 2>/dev/null && echo "<?php" >>${WP_BASE_DIR}/wp-config.php
-else
-  cat wp-config.php.template >> ${WP_BASE_DIR}/wp-config.php
+if [ ! -f ${WP_BASE_DIR}/wp-config.php ]; then
+  cp wp-config.php.template ${WP_BASE_DIR}/wp-config.php
 fi
 BOTTOM=`grep -A 100 "^require.*wp-settings.php" ${WP_BASE_DIR}/wp-config.php`
 TOP=`grep -B 1000 "^require.*wp-settings.php"   ${WP_BASE_DIR}/wp-config.php |head -n -1`
