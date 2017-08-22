@@ -31,6 +31,6 @@ RUN rm -f /tmp/wordpress.tar.gz
 RUN mv ./wp-content ./wp-content-install
 RUN chmod -R u=rwX,go=rX ./*
 
-VOLUME /opt/app-root/src/wp-content
 
 USER 1001
+VOLUME /opt/app-root/src/wp-content
