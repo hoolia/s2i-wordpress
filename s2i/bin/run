@@ -68,7 +68,7 @@ fi
 
 BOTTOM=`grep -A 100 "^require.*wp-settings.php" ${WP_BASE_DIR}/wp-config.php`
 TOP=`grep -B 1000 "^require.*wp-settings.php"   ${WP_BASE_DIR}/wp-config.php |head -n -1`
-echo -e "$BOTTOM\n$TOP"                       >>${WP_BASE_DIR}/wp-config.php
+echo -e "$TOP\n$BOTTOM"                       >>${WP_BASE_DIR}/wp-config.php
 
 if ${WORDPRESS_DEBUG}; then
   echo "Wordpress debug enabled....."
