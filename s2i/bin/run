@@ -31,7 +31,7 @@ else
 fi
 BOTTOM=`grep -A 100 "^require.*wp-settings.php" ${WP_BASE_DIR}/wp-config.php`
 TOP=`grep -B 1000 "^require.*wp-settings.php"   ${WP_BASE_DIR}/wp-config.php |head -n -1`
-echo "$TOP"                                   >>${WP_BASE_DIR}/wp-config.php
+echo "$TOP"                                    >${WP_BASE_DIR}/wp-config.php
 
 [[ -n "${WORDPRESS_DB_NAME}" ]]      && echo "define('DB_NAME',             getenv('WORDPRESS_DB_NAME'));"     >>${WP_BASE_DIR}/wp-config.php
 [[ -n "${WORDPRESS_DB_USER}" ]]      && echo "define('DB_USER',             getenv('WORDPRESS_DB_USER'));"     >>${WP_BASE_DIR}/wp-config.php 
