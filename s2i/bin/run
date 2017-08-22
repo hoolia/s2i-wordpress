@@ -29,6 +29,9 @@ if [ -f ${WP_BASE_DIR}/wp-config.php ]; then
 else
   cat wp-config.php.template >> ${WP_BASE_DIR}/wp-config.php
 fi
+BOTTOM=`grep -A 100 "^require.*wp-settings.php" ${WP_BASE_DIR}/wp-config.php`
+TOP=`grep -B 1000 "^require.*wp-settings.php"   ${WP_BASE_DIR}/wp-config.php |head -n -1`
+echo "$TOP"                                   >>${WP_BASE_DIR}/wp-config.php
 
 [[ -n "${WORDPRESS_DB_NAME}" ]]      && echo "define('DB_NAME',             getenv('WORDPRESS_DB_NAME'));"     >>${WP_BASE_DIR}/wp-config.php
 [[ -n "${WORDPRESS_DB_USER}" ]]      && echo "define('DB_USER',             getenv('WORDPRESS_DB_USER'));"     >>${WP_BASE_DIR}/wp-config.php 
@@ -66,9 +69,7 @@ define('BLOG_ID_CURRENT_SITE', 1);
 EOF
 fi
 
-BOTTOM=`grep -A 100 "^require.*wp-settings.php" ${WP_BASE_DIR}/wp-config.php`
-TOP=`grep -B 1000 "^require.*wp-settings.php"   ${WP_BASE_DIR}/wp-config.php |head -n -1`
-echo -e "$TOP\n$BOTTOM"                       >>${WP_BASE_DIR}/wp-config.php
+echo "$BOTTOM"                                >>${WP_BASE_DIR}/wp-config.php
 
 if ${WORDPRESS_DEBUG}; then
   echo "Wordpress debug enabled....."
