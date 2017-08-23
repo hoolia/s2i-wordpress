@@ -1,9 +1,10 @@
 <?php
 require_once("/opt/app-root/src/wp-config.php");
 $servername = getenv(strtoupper(getenv("WORDPRESS_DB_HOST"))."_SERVICE_HOST");
-$username = getenv("WORDPRESS_DB_USER");
-$password = getenv("WORDPRESS_DB_PASSWORD");
-$k8s_probe = getenv("K8S_PROBE");
+$username   = getenv("WORDPRESS_DB_USER");
+$password   = getenv("WORDPRESS_DB_PASSWORD");
+$database   = getenv("WORDPRESS_DB_NAME");
+$k8s_probe  = getenv("K8S_PROBE");
 
 foreach (getallheaders() as $name => $value) {
     error_log("Header: $name: $value");
@@ -18,7 +19,7 @@ if ($k8sHeader != $k8s_probe) {
     header("HTTP/1.1 403 Forbidden");
     die("Unauthorized health check");
 }
-@$link = mysqli_connect($servername, $username, $password);
+@$link = mysqli_connect($servername, $username, $password, $database);
 if ( ! $link ) {
     header("HTTP/1.1 503 Service Unavailable");
     error_log(sprintf("Could not connect to the MySQL server: %s", @mysqli_error($link)));
