@@ -32,24 +32,24 @@ TOP=`grep -B 1000 "^require.*wp-settings.php"   ${WP_BASE_DIR}/wp-config.php |he
 echo "$TOP"                                    >${WP_BASE_DIR}/wp-config.php
 
 [[ -n "${WORDPRESS_DB_NAME}" ]]      && (sed -i -e 's/^define..DB_NAME.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('DB_NAME',             getenv('WORDPRESS_DB_NAME'));"     >>${WP_BASE_DIR}/wp-config.php; )
-[[ -n "${WORDPRESS_DB_USER}" ]]      && (sed -i -e 's/^define..DB_USER.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('DB_USER',             getenv('WORDPRESS_DB_USER'));"     >>${WP_BASE_DIR}/wp-config.php 
-[[ -n "${WORDPRESS_DB_PASSWORD}" ]]  && (sed -i -e 's/^define..DB_PASSWORD.*$//g'         ${WP_BASE_DIR}/wp-config.php; echo "define('DB_PASSWORD',         getenv('WORDPRESS_DB_PASSWORD'));" >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${WORDPRESS_DB_HOST}" ]]      && (sed -i -e 's/^define..DB_HOST.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('DB_HOST',             getenv('WORDPRESS_DB_HOST'));"     >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${WORDPRESS_DB_CHARSET}" ]]   && (sed -i -e 's/^define..DB_CHARSET.*$//g'          ${WP_BASE_DIR}/wp-config.php; echo "define('DB_CHARSET',          'utf8'                     );"     >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${WORDPRESS_DB_COLLATE}" ]]   && (sed -i -e 's/^define..DB_COLLATE.*$//g'          ${WP_BASE_DIR}/wp-config.php; echo "define('DB_COLLATE',          ''                         );"     >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${AUTH_KEY}" ]]               && (sed -i -e 's/^define..AUTH_KEY.*$//g'            ${WP_BASE_DIR}/wp-config.php; echo "define('AUTH_KEY',            getenv('AUTH_KEY'));"              >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${SECURE_AUTH_KEY}" ]]        && (sed -i -e 's/^define..SECURE_AUTH_KEY.*$//g'     ${WP_BASE_DIR}/wp-config.php; echo "define('SECURE_AUTH_KEY',     getenv('SECURE_AUTH_KEY'));"       >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${LOGGED_IN_KEY}" ]]          && (sed -i -e 's/^define..LOGGED_IN_KEY.*$//g'       ${WP_BASE_DIR}/wp-config.php; echo "define('LOGGED_IN_KEY',       getenv('LOGGED_IN_KEY'));"         >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${NONCE_KEY}" ]]              && (sed -i -e 's/^define..NONCE_KEY.*$//g'           ${WP_BASE_DIR}/wp-config.php; echo "define('NONCE_KEY',           getenv('NONCE_KEY'));"             >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${AUTH_SALT}" ]]              && (sed -i -e 's/^define..AUTH_SALT.*$//g'           ${WP_BASE_DIR}/wp-config.php; echo "define('AUTH_SALT',           getenv('AUTH_SALT'));"             >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${SECURE_AUTH_SALT}" ]]       && (sed -i -e 's/^define..SECURE_AUTH_SALT.*$//g'    ${WP_BASE_DIR}/wp-config.php; echo "define('SECURE_AUTH_SALT',    getenv('SECURE_AUTH_SALT'));"      >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${LOGGED_IN_SALT}" ]]         && (sed -i -e 's/^define..LOGGED_IN_SALT.*$//g'      ${WP_BASE_DIR}/wp-config.php; echo "define('LOGGED_IN_SALT',      getenv('LOGGED_IN_SALT'));"        >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${NONCE_SALT}" ]]             && (sed -i -e 's/^define..NONCE_SALT.*$//g'          ${WP_BASE_DIR}/wp-config.php; echo "define('NONCE_SALT',          getenv('NONCE_SALT'));"            >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${DOMAIN_CURRENT_SITE}" ]]    && (sed -i -e 's/^define..DOMAIN_CURRENT_SITE.*$//g' ${WP_BASE_DIR}/wp-config.php; echo "define('DOMAIN_CURRENT_SITE', getenv('DOMAIN_CURRENT_SITE'));"   >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${WORDPRESS_HOME}" ]]         && (sed -i -e 's/^define..WP_HOME.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('WP_HOME',             getenv('WORDPRESS_HOME'));"        >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${WORDPRESS_SITEURL}" ]]      && (sed -i -e 's/^define..WP_SITEURL.*$//g'          ${WP_BASE_DIR}/wp-config.php; echo "define('WP_SITEURL',          getenv('WORDPRESS_SITEURL'));"     >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${WORDPRESS_DEBUG}" ]]        && (sed -i -e 's/^define..WP_DEBUG.*$//g'            ${WP_BASE_DIR}/wp-config.php; echo "define('WP_DEBUG',            getenv('WORDPRESS_DEBUG'));"       >>${WP_BASE_DIR}/wp-config.php
-[[ -n "${WORDPRESS_TABLE_PREFIX}" ]] && (sed -i -e 's/^.table_prefix.*$//g'               ${WP_BASE_DIR}/wp-config.php; echo "\$table_prefix  = '${WORDPRESS_TABLE_PREFIX}';"                  >>${WP_BASE_DIR}/wp-config.php
+[[ -n "${WORDPRESS_DB_USER}" ]]      && (sed -i -e 's/^define..DB_USER.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('DB_USER',             getenv('WORDPRESS_DB_USER'));"     >>${WP_BASE_DIR}/wp-config.php; ) 
+[[ -n "${WORDPRESS_DB_PASSWORD}" ]]  && (sed -i -e 's/^define..DB_PASSWORD.*$//g'         ${WP_BASE_DIR}/wp-config.php; echo "define('DB_PASSWORD',         getenv('WORDPRESS_DB_PASSWORD'));" >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${WORDPRESS_DB_HOST}" ]]      && (sed -i -e 's/^define..DB_HOST.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('DB_HOST',             getenv('WORDPRESS_DB_HOST'));"     >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${WORDPRESS_DB_CHARSET}" ]]   && (sed -i -e 's/^define..DB_CHARSET.*$//g'          ${WP_BASE_DIR}/wp-config.php; echo "define('DB_CHARSET',          'utf8'                     );"     >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${WORDPRESS_DB_COLLATE}" ]]   && (sed -i -e 's/^define..DB_COLLATE.*$//g'          ${WP_BASE_DIR}/wp-config.php; echo "define('DB_COLLATE',          ''                         );"     >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${AUTH_KEY}" ]]               && (sed -i -e 's/^define..AUTH_KEY.*$//g'            ${WP_BASE_DIR}/wp-config.php; echo "define('AUTH_KEY',            getenv('AUTH_KEY'));"              >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${SECURE_AUTH_KEY}" ]]        && (sed -i -e 's/^define..SECURE_AUTH_KEY.*$//g'     ${WP_BASE_DIR}/wp-config.php; echo "define('SECURE_AUTH_KEY',     getenv('SECURE_AUTH_KEY'));"       >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${LOGGED_IN_KEY}" ]]          && (sed -i -e 's/^define..LOGGED_IN_KEY.*$//g'       ${WP_BASE_DIR}/wp-config.php; echo "define('LOGGED_IN_KEY',       getenv('LOGGED_IN_KEY'));"         >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${NONCE_KEY}" ]]              && (sed -i -e 's/^define..NONCE_KEY.*$//g'           ${WP_BASE_DIR}/wp-config.php; echo "define('NONCE_KEY',           getenv('NONCE_KEY'));"             >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${AUTH_SALT}" ]]              && (sed -i -e 's/^define..AUTH_SALT.*$//g'           ${WP_BASE_DIR}/wp-config.php; echo "define('AUTH_SALT',           getenv('AUTH_SALT'));"             >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${SECURE_AUTH_SALT}" ]]       && (sed -i -e 's/^define..SECURE_AUTH_SALT.*$//g'    ${WP_BASE_DIR}/wp-config.php; echo "define('SECURE_AUTH_SALT',    getenv('SECURE_AUTH_SALT'));"      >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${LOGGED_IN_SALT}" ]]         && (sed -i -e 's/^define..LOGGED_IN_SALT.*$//g'      ${WP_BASE_DIR}/wp-config.php; echo "define('LOGGED_IN_SALT',      getenv('LOGGED_IN_SALT'));"        >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${NONCE_SALT}" ]]             && (sed -i -e 's/^define..NONCE_SALT.*$//g'          ${WP_BASE_DIR}/wp-config.php; echo "define('NONCE_SALT',          getenv('NONCE_SALT'));"            >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${DOMAIN_CURRENT_SITE}" ]]    && (sed -i -e 's/^define..DOMAIN_CURRENT_SITE.*$//g' ${WP_BASE_DIR}/wp-config.php; echo "define('DOMAIN_CURRENT_SITE', getenv('DOMAIN_CURRENT_SITE'));"   >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${WORDPRESS_HOME}" ]]         && (sed -i -e 's/^define..WP_HOME.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('WP_HOME',             getenv('WORDPRESS_HOME'));"        >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${WORDPRESS_SITEURL}" ]]      && (sed -i -e 's/^define..WP_SITEURL.*$//g'          ${WP_BASE_DIR}/wp-config.php; echo "define('WP_SITEURL',          getenv('WORDPRESS_SITEURL'));"     >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${WORDPRESS_DEBUG}" ]]        && (sed -i -e 's/^define..WP_DEBUG.*$//g'            ${WP_BASE_DIR}/wp-config.php; echo "define('WP_DEBUG',            getenv('WORDPRESS_DEBUG'));"       >>${WP_BASE_DIR}/wp-config.php; )
+[[ -n "${WORDPRESS_TABLE_PREFIX}" ]] && (sed -i -e 's/^.table_prefix.*$//g'               ${WP_BASE_DIR}/wp-config.php; echo "\$table_prefix  = '${WORDPRESS_TABLE_PREFIX}';"                  >>${WP_BASE_DIR}/wp-config.php; )
 
 # multisite support
 if ${WORDPRESS_MULTISITE}; then
