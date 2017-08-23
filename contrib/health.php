@@ -1,15 +1,15 @@
 <?php
-require_once("/opt/app-root/src/wp-config.php");
 $servername = getenv(strtoupper(getenv("WORDPRESS_DB_HOST"))."_SERVICE_HOST");
 $username   = getenv("WORDPRESS_DB_USER");
 $password   = getenv("WORDPRESS_DB_PASSWORD");
 $database   = getenv("WORDPRESS_DB_NAME");
 $k8s_probe  = getenv("K8S_PROBE");
+$k8sheader  = ''
 
 foreach (getallheaders() as $name => $value) {
-    error_log("Header: $name: $value");
     if ($name == "X-K8S-PROBE") {
         $k8sHeader = $value;
+        break; //foreach loop
     }
 }
 
@@ -19,6 +19,11 @@ if ($k8sHeader != $k8s_probe) {
     header("HTTP/1.1 403 Forbidden");
     die("Unauthorized health check");
 }
+
+// Test basic Wordpress functionality
+require_once("/opt/app-root/src/wp-config.php");
+
+// Test database connection
 @$link = mysqli_connect($servername, $username, $password, $database);
 if ( ! $link ) {
     header("HTTP/1.1 503 Service Unavailable");
