@@ -5,12 +5,12 @@ $dbHost           = getenv(strtoupper(getenv("WORDPRESS_DB_HOST"))."_SERVICE_HOS
 $dbUser           = getenv("WORDPRESS_DB_USER");
 $dbPass           = getenv("WORDPRESS_DB_PASSWORD");
 $dbName           = getenv("WORDPRESS_DB_NAME");
-$maxRuntime       = 10; // less then your max script execution limit
+$maxRuntime       = 290; // less then your max script execution limit
 
 
-$deadline         = time()+$maxRuntime; 
-$progressFilename = $filename.'_filepointer'; // tmp file for progress
-$errorFilename    = $filename.'_error'; // tmp file for erro
+$deadline         = time() + $maxRuntime; 
+$progressFilename = $filename . '_filepointer'; // tmp file for progress
+$errorFilename    = $filename . '_error'; // tmp file for erro
 $filenames        = scandir('sql');
 $link             = mysqli_connect($dbHost, $dbUser, $dbPass, $dbName) OR die('connecting to host: ' . $dbHost . ' failed: ' . mysqli_error($link));
 
@@ -55,9 +55,9 @@ foreach ($filenames as $filename) {
     }
     
     if( gzeof($fp) ){
-        echo 'dump successfully restored!';
+        echo 'dump successfully restored! ' . $queryCount . ' queries processed!';
     }else{
-        echo gztell($fp).'/'.filesize($filename).' '.(round(gztell($fp)/filesize($filename), 2)*100).'%'."\n";
+        echo gztell($fp).'/'.filesize($filename).' '.(round(gztell($fp)/(filesize($filename)+1), 2)*100).'%'."\n";
         echo $queryCount.' queries processed! please reload or wait for automatic browser refresh!';
     }
     gzclose($fp);

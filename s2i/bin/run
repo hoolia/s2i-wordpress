@@ -76,10 +76,10 @@ if ${WORDPRESS_DEBUG}; then
 fi
 
 if [[ $(ls -A sql/*.{sql,gz} ) ]]; then
-  echo -n "Found sql migration files, starting mysqlimport.php ..."
+  echo "Found sql migration files, starting mysqlimport.php ..."
   . /opt/rh/rh-php70/enable
   php mysqlimport.php
-  echo    "Done"
+  echo "... Done"
 fi
 
 echo -e "-> Wordpress is now configured!\n"
