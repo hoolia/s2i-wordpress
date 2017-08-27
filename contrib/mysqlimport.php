@@ -5,20 +5,60 @@ $dbHost           = getenv(strtoupper(getenv("WORDPRESS_DB_HOST"))."_SERVICE_HOS
 $dbUser           = getenv("WORDPRESS_DB_USER");
 $dbPass           = getenv("WORDPRESS_DB_PASSWORD");
 $dbName           = getenv("WORDPRESS_DB_NAME");
-$maxRuntimr       = 290; // less then your max script execution limit
-
-
-$deadline         = time() + $maxRuntime; 
+$deadline         = time() + 3000000; // less then your max script execution limit`
 $filenames        = scandir($dir);
-$link             = mysqli_connect($dbHost, $dbUser, $dbPass, $dbName) OR die('connecting to host: ' . $dbHost . ' failed: ' . mysqli_error($link));
+$mysql             = new mysqli($dbHost, $dbUser, $dbPass, $dbName) OR die('connecting to host: ' . $dbHost . ' failed: ' . mysqli_error($mysql));
+$mysql->query("SET sql_mode = ''");
+
+function save_progress() {
+      global $mysql;
+      global $filename;
+      global $fp;
+      $mysql->query("LOCK TABLES mysqlimport WRITE");
+      $mysql->query("INSERT INTO mysqlimport(`what`,`done`) VALUES('" . $filename . "', " . gztell($fp) . ")");
+      $mysql->query("UNLOCK TABLES");
+      echo gztell($fp);
+}
+
+pcntl_signal(SIGINT, function ($sig) {
+  echo 'mysqlimport exiting with signal: ' . $sig;
+  global $filename;
+  global $fp;
+  global $mysql;
+  if ($fp  ) gzclose($fp);
+  if ($mysql) {
+    try {
+      echo 'Saving file postion ' . gztell($fp) . ".\n";
+      $mysql->query("INSERT INTO mysqlimport(what,done) VALUES('" . $filename . "', " . gztell($fp) . ")");
+      $mysql->close();
+    } catch (Exception $e) { var_dump($e); }
+  }
+  exit(1);
+});
+
+$mysql->query("CREATE TABLE IF NOT EXISTS mysqlimport(`when` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, `what` VARCHAR(255), `done` BIGINT UNSIGNED DEFAULT 0)");
 
 foreach ($filenames as $filename) {
   $file = $dir . '/' . $filename;
   if ($filename == '.' || $filename == '..' || is_dir($file)) {
       continue;
   }
+  echo "mysqlimport(" . $file . ");\n";
 
   ($fp = gzopen($file, 'r')) OR die('failed to open file:' . $file);
+
+  //try resume from previous import
+  try {
+          echo 'looking for previous mysqlimport position ... ';
+          if ($mysql_result = $mysql->query("SELECT `done` FROM mysqlimport WHERE `what` = '" . $filename . "' ORDER BY `when` DESC LIMIT 1")) {
+                  $row = $mysql_result->fetch_assoc();
+                  $pos = $row["done"];
+                  gzseek($fp, $pos);
+                  echo 'resuming from position ' . $pos . ".\n";
+          }
+          else
+                  echo 'not found. starting at 0.' . "\n";
+  } catch(Exception $e) { var_dump($e); }
 
   $queryCount = 0;
   $query      = '';
@@ -29,22 +69,26 @@ foreach ($filenames as $filename) {
   
       $query .= $line;
       if( substr(trim($query),-1)==';' ){
-          if( ! mysqli_query($link, $query) ){
-              echo 'Error performing query \'' . $query . '\': ' . @mysqli_error();
-              exit;
+          if( ! $mysql->query($query) ){
+              echo 'Warning: Error performing query \'' . $query . '\': ' . $mysql->error;
+              //exit;
           }
           $query = '';
           $queryCount++;
+          if ($queryCount % 100   == 0) echo '.';
+          if ($queryCount % 10000 == 0) save_progress();
       }
   }
   
   if( gzeof($fp) ){
-      echo 'dump successfully restored! ' . $queryCount . ' queries processed!';
+      echo 'dump successfully restored! ' . $queryCount . ' queries processed in ' . (time() - ($deadline-590)) . ' seconds!' . "\n";
   }else{
-      @echo @gztell($fp) . '/' . @filesize($file) . ' ' . (round(@gztell($fp) / (@filesize($file)+1), 2)*100) . '%' . "\n";
-      echo 'dump partially restored! ' . $queryCount . ' queries processed! please try again.';
+      echo 'deadline (590s) expired. dump partially restored! ' . $queryCount . ' queries from ' . @gztell($fp) . ' uncompressed Bytes processed! please try again.' . "\n";
+      echo 'Saved file postion '; 
+      save_progress();
+      echo ".\n";
   }
   gzclose($fp);
 }
-mysqli_close($link);
+$mysql->close();
 ?>
