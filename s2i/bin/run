@@ -31,6 +31,12 @@ BOTTOM=`grep -A 100 "^require.*wp-settings.php" ${WP_BASE_DIR}/wp-config.php`
 TOP=`grep -B 1000 "^require.*wp-settings.php"   ${WP_BASE_DIR}/wp-config.php |head -n -1`
 echo "$TOP"                                    >${WP_BASE_DIR}/wp-config.php
 
+# Enable HTTPS offloading by Reverse Proxy
+grep HTTP_X_FORWARDED_PROTO ${WP_BASE_DIR}/wp-config.php || echo '
+if ($_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") $_SERVER["HTTPS"] = "on";
+if (isset($_SERVER["HTTP_X_FORWARDED_HOST"]))      $_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];
+' >>${WP_BASE_DIR}/wp-config.php
+
 [[ -n "${WORDPRESS_DB_NAME}" ]]      && (sed -i -e 's/^define..DB_NAME.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('DB_NAME',             getenv('WORDPRESS_DB_NAME'));"     >>${WP_BASE_DIR}/wp-config.php; )
 [[ -n "${WORDPRESS_DB_USER}" ]]      && (sed -i -e 's/^define..DB_USER.*$//g'             ${WP_BASE_DIR}/wp-config.php; echo "define('DB_USER',             getenv('WORDPRESS_DB_USER'));"     >>${WP_BASE_DIR}/wp-config.php; ) 
 [[ -n "${WORDPRESS_DB_PASSWORD}" ]]  && (sed -i -e 's/^define..DB_PASSWORD.*$//g'         ${WP_BASE_DIR}/wp-config.php; echo "define('DB_PASSWORD',         getenv('WORDPRESS_DB_PASSWORD'));" >>${WP_BASE_DIR}/wp-config.php; )

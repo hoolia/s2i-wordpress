@@ -1,4 +1,14 @@
 
+/**
+ * Handle SSL reverse proxy
+ */
+if ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+    $_SERVER['HTTPS']='on';
+
+if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+    $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
+
 /** Absolute path to the WordPress directory. */
 if ( !defined('ABSPATH') )
 define('ABSPATH', dirname(__FILE__) . '/');
