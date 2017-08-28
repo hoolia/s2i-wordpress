@@ -6,6 +6,8 @@
 #
 
 mv /tmp/src/wp-content /tmp/src/wp-content-user
+[ -f /tmp/src/php.ini       ] && mv /tmp/src/php.ini             /etc/opt/rh/rh-php70/php.d/
+[ -d /tmp/src/configuration ] && mv /tmp/src/configuration/*.ini /etc/opt/rh/rh-php70/php.d/
 bash -x ${STI_SCRIPTS_PATH}/assemble-base
 
 chmod -R u=rwX,go=rX ./
