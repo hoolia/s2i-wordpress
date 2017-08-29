@@ -52,10 +52,14 @@ foreach ($filenames as $filename) {
   try {
           echo 'looking for previous mysqlimport position ... ';
           if ($mysql_result = $mysql->query("SELECT `done` FROM mysqlimport WHERE `what` = '" . $filename . "' ORDER BY `when` DESC LIMIT 1")) {
-                  $row = $mysql_result->fetch_assoc();
-                  $pos = $row["done"];
-                  gzseek($fp, $pos);
-                  echo 'resuming from position ' . $pos . ".\n";
+                  if ($mysql_result->num_rows > 0) {
+                          $row = $mysql_result->fetch_assoc();
+                          $pos = $row["done"];
+                          gzseek($fp, $pos);
+                          echo 'resuming from position ' . $pos . ".\n";
+                  }
+                  else
+                          echo 'not found. starting at 0.' . "\n";
           }
           else
                   echo 'not found. starting at 0.' . "\n";
