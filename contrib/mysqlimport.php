@@ -5,7 +5,8 @@ $dbHost           = getenv(strtoupper(getenv("WORDPRESS_DB_HOST"))."_SERVICE_HOS
 $dbUser           = getenv("WORDPRESS_DB_USER");
 $dbPass           = getenv("WORDPRESS_DB_PASSWORD");
 $dbName           = getenv("WORDPRESS_DB_NAME");
-$deadline         = time() + 3000000; // less then your max script execution limit`
+$timeout          = 3000000;
+$deadline         = time() + $timeout; // less then your max script execution limit`
 $filenames        = scandir($dir);
 $mysql             = new mysqli($dbHost, $dbUser, $dbPass, $dbName) OR die('connecting to host: ' . $dbHost . ' failed: ' . mysqli_error($mysql));
 $mysql->query("SET sql_mode = ''");
@@ -81,13 +82,13 @@ foreach ($filenames as $filename) {
   }
   
   if( gzeof($fp) ){
-      echo 'dump successfully restored! ' . $queryCount . ' queries processed in ' . (time() - ($deadline-590)) . ' seconds!' . "\n";
+          echo "dump successfully restored!\n";
   }else{
-      echo 'deadline (590s) expired. dump partially restored! ' . $queryCount . ' queries from ' . @gztell($fp) . ' uncompressed Bytes processed! please try again.' . "\n";
-      echo 'Saved file postion '; 
-      save_progress();
-      echo ".\n";
+          echo 'deadline (' . $timeout . "s) expired. dump partially restored!\n"
   }
+  echo 'queries : ' . $queryCount                     . " queries\n" 
+     . 'filesize: ' . save_progress()                 . " bytes  \n"
+     . 'duration: ' . (time() - ($deadline-$timeout)) . " seconds\n";
   gzclose($fp);
 }
 $mysql->close();
