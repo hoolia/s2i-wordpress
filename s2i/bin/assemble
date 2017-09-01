@@ -12,3 +12,5 @@ bash -x ${STI_SCRIPTS_PATH}/assemble-base
 
 chmod -R u=rwX,go=rX ./
 chmod a+rw wp-config.php .
+
+exit 0
