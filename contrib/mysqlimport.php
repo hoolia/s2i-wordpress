@@ -88,7 +88,7 @@ foreach ($filenames as $filename) {
   if( gzeof($fp) ){
           echo "dump successfully restored!\n";
   }else{
-          echo 'deadline (' . $timeout . "s) expired. dump partially restored!\n"
+          echo 'deadline (' . $timeout . "s) expired. dump partially restored!\n";
   }
   echo 'queries : ' . $queryCount                     . " queries\n" 
      . 'filesize: ' . save_progress()                 . " bytes  \n"
