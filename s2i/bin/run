@@ -1,5 +1,6 @@
 #!/bin/bash -x
 
+. /opt/rh/rh-php70/enable
 readonly WP_BASE_DIR=/opt/app-root/src
 
 echo "-> Installing base Wordpress plugins and themes onto Persistent Volume ..."
@@ -83,9 +84,11 @@ fi
 
 if [[ $(ls -A sql/*.{sql,gz} ) ]]; then
   echo "Found sql migration files, starting mysqlimport.php ..."
-  . /opt/rh/rh-php70/enable
   php mysqlimport.php
   echo "... Done"
+else
+  echo "Installing new Wordpress into Database ..."
+  php ./wp-admin/install.php
 fi
 
 echo -e "-> Wordpress is now configured!\n"
