@@ -3,7 +3,7 @@ MAINTAINER Samuel Terburg <sterburg@hoolia.eu>
 
 CMD /usr/libexec/s2i/run
 
-ENV WORDPRESS_VERSION 4.8
+ENV WORDPRESS_VERSION ${WORDPRESS_VERSION:-4.8}
 
 USER root
 
