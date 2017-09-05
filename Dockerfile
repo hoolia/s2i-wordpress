@@ -1,4 +1,4 @@
-FROM php:7.0
+FROM centos/php-70-centos7:latest
 MAINTAINER Samuel Terburg <sterburg@hoolia.eu>
 
 CMD /usr/libexec/s2i/run
@@ -16,7 +16,10 @@ COPY s2i/bin/*      $STI_SCRIPTS_PATH/
 
 RUN update-ca-trust
 
-RUN yum -y --enablerepo centos-sclo-sclo-testing install sclo-php70-php-pecl-memcached && \
+RUN yum search memcached
+RUN yum --enablerepo=centos-sclo-sclo-testing search memcached
+RUN yum repos --list
+RUN yum -y install sclo-php70-php-pecl-memcached && \
     yum clean all -y
 
 RUN { \
