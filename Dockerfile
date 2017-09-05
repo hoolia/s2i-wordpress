@@ -16,20 +16,22 @@ COPY s2i/bin/*      $STI_SCRIPTS_PATH/
 
 RUN update-ca-trust
 
-RUN yum search memcached
-RUN yum --enablerepo=centos-sclo-sclo-testing search memcached
-RUN yum repos --list
-RUN yum -y install sclo-php70-php-pecl-memcached && \
-    yum clean all -y
+## SMTP ##
+RUN yum install -y http://epel.mirror.nucleus.be//7Server/x86_64/e/epel-release-7-9.noarch.rpm \
+ && yum install -y ssmtp nss_wrapper \
+ && yum clean all -y \
+ && chmod 777 /etc/ssmtp \
+ && chmod g-s /usr/sbin/ssmtp
+ADD contrib/ssmtp.conf /etc/ssmtp/ssmtp.conf
 
-RUN { \
-      echo 'opcache.memory_consumption=128'; \
-      echo 'opcache.interned_strings_buffer=8'; \
-      echo 'opcache.max_accelerated_files=4000'; \
-      echo 'opcache.revalidate_freq=60'; \
-      echo 'opcache.fast_shutdown=1'; \
-      echo 'opcache.enable_cli=1'; \
-    } > /etc/opt/rh/rh-php70/php.d/11-opcache-wordpress.ini
+## MemCached ##
+RUN yum install -y rh-php70-php-devel libmemcached-devel libmemcached \
+ && pecl install memcached
+ADD contrib/41-memcached.ini /etc/opt/rh/rh-php70/php.d/41-memcached.ini
+
+
+## OpCache ##
+Add contrib/11-opcache-wordpress.ini /etc/opt/rh/rh-php70/php.d/11-opcache-wordpress.ini
 
 USER 1001
 
