@@ -13,6 +13,7 @@ RUN mv $STI_SCRIPTS_PATH/run      $STI_SCRIPTS_PATH/run-base \
 COPY contrib/*.php* /opt/app-root/src/
 COPY contrib/*.crt  /etc/pki/ca-trust/source/anchors/
 COPY s2i/bin/*      $STI_SCRIPTS_PATH/
+RUN chmod -R a+rwX /etc/opt/rh/rh-php70/php.d/
 RUN chmod -R u=rwX,go=rX ./*
 
 RUN update-ca-trust

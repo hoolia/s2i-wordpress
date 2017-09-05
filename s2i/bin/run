@@ -74,12 +74,10 @@ define('BLOG_ID_CURRENT_SITE', 1);
 EOF
 fi
 
-if [ -f /etc/opt/rh/rh-php70/php.d/50-memcached.ini ]; then
-        ping -c2 memcached
-        if [ $? == 0 ]; then
-                echo -n "MemCached service detected. Configuring Wordpress ..."
-                echo "done"
-        fi
+if [ -n "${MEMCACHED_HOST}" ]; then
+  echo -n "MemCached service detected. Configuring Wordpress ..."
+  echo -e "session.save_handler = memcached\nsession.save_path = "tcp://${MEMCACHED_HOST}:11211" >>/etc/opt/rh/rh-php70/php.d/42-memcached.ini
+  echo "done"
 fi
 
 echo "$BOTTOM"                                >>${WP_BASE_DIR}/wp-config.php
