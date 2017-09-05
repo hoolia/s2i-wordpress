@@ -3,7 +3,7 @@ MAINTAINER Samuel Terburg <sterburg@hoolia.eu>
 
 CMD /usr/libexec/s2i/run
 
-ENV WORDPRESS_VERSION ${WORDPRESS_VERSION:-4.8}
+ENV WORDPRESS_VERSION ${WORDPRESS_VERSION:-4.8.1}
 
 USER root
 
@@ -16,6 +16,9 @@ COPY s2i/bin/*      $STI_SCRIPTS_PATH/
 
 RUN update-ca-trust
 
+RUN yum -y --enablerepo rhel-server-rhscl-7-rpms install rh-php70-php-pecl-memcached && \
+    yum clean all -y
+
 RUN { \
       echo 'opcache.memory_consumption=128'; \
       echo 'opcache.interned_strings_buffer=8'; \
@@ -25,12 +28,12 @@ RUN { \
       echo 'opcache.enable_cli=1'; \
     } > /etc/opt/rh/rh-php70/php.d/11-opcache-wordpress.ini
 
+USER 1001
+
 RUN curl -vo /tmp/wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz 
 RUN tar -xzf /tmp/wordpress.tar.gz --strip-components=1 -C .
 RUN rm -f /tmp/wordpress.tar.gz
 RUN mv ./wp-content ./wp-content-install
 RUN chmod -R u=rwX,go=rX ./*
 
-
-USER 1001
 VOLUME /opt/app-root/src/wp-content

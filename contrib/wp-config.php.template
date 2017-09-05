@@ -1,4 +1,6 @@
 <?php
+define('FS_METHOD','direct');
+
 /**
  * Handle SSL reverse proxy
  */

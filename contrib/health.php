@@ -4,7 +4,7 @@ $username   = getenv("WORDPRESS_DB_USER");
 $password   = getenv("WORDPRESS_DB_PASSWORD");
 $database   = getenv("WORDPRESS_DB_NAME");
 $k8s_probe  = getenv("K8S_PROBE");
-$k8sheader  = '';
+$k8sHeader  = '';
 
 foreach (getallheaders() as $name => $value) {
     if ($name == "X-K8S-PROBE") {
