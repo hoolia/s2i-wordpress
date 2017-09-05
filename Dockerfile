@@ -13,6 +13,7 @@ RUN mv $STI_SCRIPTS_PATH/run      $STI_SCRIPTS_PATH/run-base \
 COPY contrib/*.php* /opt/app-root/src/
 COPY contrib/*.crt  /etc/pki/ca-trust/source/anchors/
 COPY s2i/bin/*      $STI_SCRIPTS_PATH/
+RUN chmod -R u=rwX,go=rX ./*
 
 RUN update-ca-trust
 
@@ -39,6 +40,6 @@ RUN curl -vo /tmp/wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRE
 RUN tar -xzf /tmp/wordpress.tar.gz --strip-components=1 -C .
 RUN rm -f /tmp/wordpress.tar.gz
 RUN mv ./wp-content ./wp-content-install
-RUN chmod -R u=rwX,go=rX ./*
+RUN chmod -R u=rwX,go=rX ./* && true
 
 VOLUME /opt/app-root/src/wp-content
