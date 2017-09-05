@@ -26,7 +26,7 @@ RUN yum install -y http://epel.mirror.nucleus.be//7Server/x86_64/e/epel-release-
 ADD contrib/ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 ## MemCached ##
-RUN yum install -y rh-php70-php-devel libmemcached-devel libmemcached \
+RUN yum install -y --enablerepo rhel-server-rhscl-7-rpms rh-php70-php-devel libmemcached-devel libmemcached \
  && pecl install memcached
 ADD contrib/41-memcached.ini /etc/opt/rh/rh-php70/php.d/41-memcached.ini
 
@@ -40,6 +40,6 @@ RUN curl -vo /tmp/wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRE
 RUN tar -xzf /tmp/wordpress.tar.gz --strip-components=1 -C .
 RUN rm -f /tmp/wordpress.tar.gz
 RUN mv ./wp-content ./wp-content-install
-RUN chmod -R u=rwX,go=rX ./* && true
+RUN chmod -R u=rwX,go=rX ./* || true
 
 VOLUME /opt/app-root/src/wp-content
