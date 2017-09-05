@@ -17,7 +17,7 @@ COPY s2i/bin/*      $STI_SCRIPTS_PATH/
 RUN update-ca-trust
 
 ## SMTP ##
-RUN yum localinstall -y http://epel.mirror.nucleus.be//7Server/x86_64/e/epel-release-7-9.noarch.rpm \
+RUN yum install -y http://epel.mirror.nucleus.be//7Server/x86_64/e/epel-release-7-10.noarch.rpm \
  && yum install -y ssmtp nss_wrapper \
  && yum clean all -y \
  && chmod 777 /etc/ssmtp \
