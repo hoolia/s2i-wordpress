@@ -16,7 +16,7 @@ COPY s2i/bin/*      $STI_SCRIPTS_PATH/
 
 RUN update-ca-trust
 
-RUN yum -y --enablerepo rhel-server-rhscl-7-rpms install rh-php70-php-pecl-memcached && \
+RUN yum -y --enablerepo centos-sclo-sclo-testing install sclo-php70-php-pecl-memcached && \
     yum clean all -y
 
 RUN { \
