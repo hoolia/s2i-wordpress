@@ -26,7 +26,12 @@ RUN yum install -y http://epel.mirror.nucleus.be//7Server/x86_64/e/epel-release-
 ADD contrib/ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 ## MemCached ##
-RUN yum install -y --enablerepo rhel-server-rhscl-7-rpms rh-php70-php-devel libmemcached-devel libmemcached \
+RUN yum install -y \
+                --enablerepo rhel-server-rhscl-7-rpms \
+                --enablerepo rhel-7-server-optional-rpms \
+                rh-php70-php-devel \
+                libmemcached-devel \
+                libmemcached \
  && pecl install memcached
 ADD contrib/41-memcached.ini /etc/opt/rh/rh-php70/php.d/41-memcached.ini
 
